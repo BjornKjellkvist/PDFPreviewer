@@ -25,7 +25,7 @@
                 <Image x:Name="image" Source="Gfx/Refresh.ico" RenderTransformOrigin="0.016,0.571"/>
             </StackPanel>
         </Button>
-        <Label x:Name="Label_PageWidth" Height="25"  Content="The initial size of the pages" HorizontalAlignment="Left" Grid.Row="2" VerticalAlignment="Top"/>
+        <Label x:Name="Label_PageWidth" Height="25"  Content="The initial width of the pages" HorizontalAlignment="Left" Grid.Row="2" VerticalAlignment="Top"/>
         <TextBox x:Name="TextBox_PageWidth" HorizontalAlignment="Left" Height="25" Width="40" Margin="185,0,0,0" Grid.Row="2" TextWrapping="NoWrap" VerticalAlignment="Top" KeyUp="TextBox_NumOfPages_KeyUp" TextChanged="TextBox_PageWidth_TextChanged"/>
         <TextBlock x:Name="Label_PageWidth_helper" FontSize="9" TextWrapping="WrapWithOverflow" HorizontalAlignment="Left" Margin="230,0,0,0" Grid.Row="2" VerticalAlignment="Top" Height="25" Width="68">(810 is the width of an A4 page)</TextBlock>
         <TextBlock x:Name="Label_PageWidth_helper_Copy" FontSize="9" TextWrapping="WrapWithOverflow" HorizontalAlignment="Left" Margin="230,0,0,0" VerticalAlignment="Top" Height="25" Width="68">(Leave at 0 to render all pages)</TextBlock>

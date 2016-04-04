@@ -1,5 +1,6 @@
 # PDFPreviewer
-A Tool for viewing PDF documents. Will automatically re-render the document when changes are made, a great tool for anyone working on creating pdf pages
+A Tool for viewing PDF documents. Will automatically re-render the document when changes are made.
+This tool is for people who are programmatically developing PDF documents and are tired of having to re-open the document after each iteration.
 
 * This tool requires Ghostscript http://www.ghostscript.com/ *
 
