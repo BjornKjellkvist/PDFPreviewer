@@ -12,3 +12,4 @@ Features
 * Automatically re-renders the PDF document as soon as you make a change, giving you a handsfree application!
 * Multiple settings options (including the number of pages you want rendered!), now YOU are in control!
 * Lightwegiht infrastructure for superfast ultra-computational software-ness!
+* Arrow key navigation between pages!
