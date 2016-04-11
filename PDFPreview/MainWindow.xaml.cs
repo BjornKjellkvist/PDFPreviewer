@@ -105,6 +105,7 @@ namespace PDFPreview {
                     can.VerticalAlignment = VerticalAlignment.Top;
                     win.Content = can;
                     RenderWindow(win, i);
+                    win.KeyUp += new System.Windows.Input.KeyEventHandler(MoveToPage);
                     using (var stream = new MemoryStream(ImageToByteArray(page))) {
                         Dispatcher.Invoke((Action)(() => {
                             BitmapImage imageIn = new BitmapImage();
@@ -121,6 +122,9 @@ namespace PDFPreview {
                 }));
             }
         }
+
+
+
         public static byte[] ImageToByteArray(System.Drawing.Image x) {
             ImageConverter _imageConverter = new ImageConverter();
             byte[] xByte = (byte[])_imageConverter.ConvertTo(x, typeof(byte[]));
@@ -156,6 +160,34 @@ namespace PDFPreview {
             return images;
         }
 
+        bool FirstTime = true;
+        private void MoveToPage(object sender, System.Windows.Input.KeyEventArgs e) {
+            //FIRSTTIME FIXES RECURSION, DONT ASK ME WHY...
+            var WinIndex = System.Windows.Application.Current.Windows.OfType<Window>()
+                .Select((str, index) => new { str, index })
+                .Where(x => x.str.Equals(sender))
+                .FirstOrDefault();
+            if (e.Key == Key.Left && WinIndex.index < System.Windows.Application.Current.Windows.Count && WinIndex.index > 1) {
+                Window moveTo = System.Windows.Application.Current.Windows.OfType<Window>().ElementAt(WinIndex.index - 1);
+                if (moveTo.WindowState == WindowState.Minimized) {
+                    moveTo.WindowState = WindowState.Normal;
+                }
+                moveTo.Activate();
+            }
+            if (FirstTime) {
+                if (e.Key == Key.Right && WinIndex.index < System.Windows.Application.Current.Windows.Count - 1) {
+                    Window moveTo = System.Windows.Application.Current.Windows.OfType<Window>().ElementAt(WinIndex.index + 1);
+                    if (moveTo.WindowState == WindowState.Minimized) {
+                        moveTo.WindowState = WindowState.Normal;
+                    }
+                    moveTo.Activate();
+                    FirstTime = false;
+                    return;
+                }
+            }
+            FirstTime = true;
+        }
+
         private void TextBox_NumOfPages_TextChanged(object sender, TextChangedEventArgs e) {
             string text = TextBox_NumOfPages.Text;
             if (!text.Equals("")) {
@@ -169,8 +201,6 @@ namespace PDFPreview {
 
         private void TextBox_NumOfPages_KeyUp(object sender, System.Windows.Input.KeyEventArgs e) {
             if (e.Equals(Key.Enter) || e.Equals(Key.Escape)) {
-                //TraversalRequest request = new TraversalRequest(FocusNavigationDirection.Next);
-                //MoveFocus(request);
                 Keyboard.ClearFocus();
             }
         }
