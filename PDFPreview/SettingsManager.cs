@@ -31,7 +31,7 @@ namespace PDFPreview {
         }
 
         public static string FilePath {
-            get { Trace.WriteLine("Returned: " + Settings.FilePath); return Settings.FilePath; }
+            get { return Settings.FilePath; }
             set {
                 Settings.FilePath = value;
                 Settings.Save();
