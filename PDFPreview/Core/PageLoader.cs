@@ -19,11 +19,13 @@ namespace PDFPreview.Core {
     class PageLoader {
         public BackgroundWorker ImageConverter = new BackgroundWorker();
         MainWindow main;
+        Navigator _Navigator;
         public PageLoader(MainWindow main) {
             ImageConverter.WorkerReportsProgress = false;
             ImageConverter.WorkerSupportsCancellation = true;
             ImageConverter.DoWork += (obj, e) => RenderPages();
             this.main = main;
+            _Navigator = new Navigator();
         }
 
         private void RenderPages() {
@@ -45,7 +47,7 @@ namespace PDFPreview.Core {
                     win.Content = can;
                     win.Owner = main;
                     RenderWindow(win, i);
-                    win.KeyUp += new System.Windows.Input.KeyEventHandler(main.MoveToPage);
+                    win.KeyUp += new System.Windows.Input.KeyEventHandler(_Navigator.MoveToPage);
                     using (var stream = new MemoryStream(ImageToByteArray(page))) {
                         BitmapImage imageIn = new BitmapImage();
                         imageIn.BeginInit();

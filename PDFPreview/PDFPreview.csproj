@@ -61,9 +61,10 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="ErrorManager.cs" />
-    <Compile Include="ImageLoader.cs" />
-    <Compile Include="SettingsManager.cs" />
+    <Compile Include="Core\ErrorManager.cs" />
+    <Compile Include="Core\Navigator.cs" />
+    <Compile Include="Core\PageLoader.cs" />
+    <Compile Include="Core\SettingsManager.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -72,7 +73,6 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Logic.cs" />
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>

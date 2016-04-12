@@ -58,34 +58,6 @@ namespace PDFPreview {
             }
         }
 
-        bool FirstTime = true;
-        public void MoveToPage(object sender, System.Windows.Input.KeyEventArgs e) {
-            //FIRSTTIME FIXES RECURSION, DONT ASK ME WHY...
-            var WinIndex = System.Windows.Application.Current.Windows.OfType<Window>()
-                .Select((str, index) => new { str, index })
-                .Where(x => x.str.Equals(sender))
-                .FirstOrDefault();
-            if (e.Key == Key.Left && WinIndex.index < System.Windows.Application.Current.Windows.Count && WinIndex.index > 1) {
-                Window moveTo = System.Windows.Application.Current.Windows.OfType<Window>().ElementAt(WinIndex.index - 1);
-                if (moveTo.WindowState == WindowState.Minimized) {
-                    moveTo.WindowState = WindowState.Normal;
-                }
-                moveTo.Activate();
-            }
-            if (FirstTime) {
-                if (e.Key == Key.Right && WinIndex.index < System.Windows.Application.Current.Windows.Count - 1) {
-                    Window moveTo = System.Windows.Application.Current.Windows.OfType<Window>().ElementAt(WinIndex.index + 1);
-                    if (moveTo.WindowState == WindowState.Minimized) {
-                        moveTo.WindowState = WindowState.Normal;
-                    }
-                    moveTo.Activate();
-                    FirstTime = false;
-                    return;
-                }
-            }
-            FirstTime = true;
-        }
-
         private void TextBox_NumOfPages_TextChanged(object sender, TextChangedEventArgs e) {
             string text = TextBox_NumOfPages.Text;
             if (!text.Equals("")) {
@@ -113,6 +85,7 @@ namespace PDFPreview {
                 imageLoader.ImageConverter.RunWorkerAsync();
             }
         }
+
         private void Button_Select_File_KeyDown(object sender, System.Windows.Input.KeyEventArgs e) {
             if (e.Key.Equals(Key.Return)) {
                 SettingsManager.FilePath = TextBox_FilePath.Text;
@@ -120,6 +93,7 @@ namespace PDFPreview {
                 imageLoader.ImageConverter.RunWorkerAsync();
             }
         }
+
         private void Button_Refresh_Click(object sender, RoutedEventArgs e) {
             Dispatcher.InvokeAsync((Action)(() => {
                 imageLoader.ImageConverter.RunWorkerAsync();
@@ -128,11 +102,12 @@ namespace PDFPreview {
 
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e) {
             System.Windows.Application.Current.Shutdown();
-
         }
+
         public void Close(object sender, RoutedEventArgs e) {
             System.Windows.Application.Current.Shutdown();
         }
+
         private void TextBox_PageWidth_TextChanged(object sender, TextChangedEventArgs e) {
             string text = TextBox_PageWidth.Text;
             if (!text.Equals("")) {
