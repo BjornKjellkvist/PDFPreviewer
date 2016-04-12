@@ -15,11 +15,11 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Threading;
 
-namespace PDFPreview {
-    class ImageLoader {
+namespace PDFPreview.Core {
+    class PageLoader {
         public BackgroundWorker ImageConverter = new BackgroundWorker();
         MainWindow main;
-        public ImageLoader(MainWindow main) {
+        public PageLoader(MainWindow main) {
             ImageConverter.WorkerReportsProgress = false;
             ImageConverter.WorkerSupportsCancellation = true;
             ImageConverter.DoWork += (obj, e) => RenderPages();

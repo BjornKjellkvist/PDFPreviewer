@@ -19,24 +19,25 @@ using Ghostscript.NET;
 using System.Windows.Forms;
 using System.Text.RegularExpressions;
 using System.Diagnostics;
+using PDFPreview.Core;
 
 namespace PDFPreview {
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
     public partial class MainWindow : Window {
-        private ImageLoader imageLoader;
+        private PageLoader imageLoader;
         public MainWindow() {
             Top = Screen.PrimaryScreen.WorkingArea.Top;
             Left = Screen.PrimaryScreen.WorkingArea.Left;
             InitializeComponent();
             SetWatcher();
             InitFields();
-            imageLoader = new ImageLoader(this);
+            imageLoader = new PageLoader(this);
             imageLoader.ImageConverter.RunWorkerAsync();
         }
         private void RerenderImage(object source, FileSystemEventArgs e) {
-                imageLoader.ImageConverter.RunWorkerAsync();
+            imageLoader.ImageConverter.RunWorkerAsync();
         }
 
         private void InitFields() {

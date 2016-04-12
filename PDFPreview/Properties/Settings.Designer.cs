@@ -70,5 +70,17 @@ namespace PDFPreview.Properties {
                 this["FilePath"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("0")]
+        public int StartOnPage {
+            get {
+                return ((int)(this["StartOnPage"]));
+            }
+            set {
+                this["StartOnPage"] = value;
+            }
+        }
     }
 }

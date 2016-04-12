@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace PDFPreview {
+namespace PDFPreview.Core {
     public static class SettingsManager {
 
         private static Properties.Settings Settings { get { return Properties.Settings.Default; } }
@@ -34,6 +34,13 @@ namespace PDFPreview {
             get { return Settings.FilePath; }
             set {
                 Settings.FilePath = value;
+                Settings.Save();
+            }
+        }
+        public static int StartOnPage {
+            get { return Settings.StartOnPage; }
+            set {
+                Settings.StartOnPage = value;
                 Settings.Save();
             }
         }

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using PDFPreview.Core;
+using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Data;
@@ -14,7 +15,7 @@ namespace PDFPreview {
         protected override void OnStartup(StartupEventArgs e) {
             if (e.Args.Length > 1) {
                 if (!string.IsNullOrWhiteSpace(e.Args[0])) {
-                    Logic.FilePath = e.Args[0];
+                    SettingsManager.FilePath = e.Args[0];
                 }
             }
             base.OnStartup(e);
