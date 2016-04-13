@@ -14,17 +14,10 @@ namespace PDFPreview.Core {
             get { return Settings.NumOfPages; }
             set {
                 Settings.NumOfPages = value;
-                DefinedPages = (value == 0) ? false : true;
                 Settings.Save();
             }
         }
-        public static bool DefinedPages {
-            get { return Settings.DefinedPages; }
-            private set {
-                Settings.DefinedPages = value;
-                Settings.Save();
-            }
-        }
+
         public static double PageWidth {
             get { return Settings.PageWidth; }
             set { Settings.PageWidth = value; }

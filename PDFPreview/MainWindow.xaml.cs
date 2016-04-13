@@ -36,13 +36,14 @@ namespace PDFPreview {
             imageLoader = new PageLoader(this);
             imageLoader.ImageConverter.RunWorkerAsync();
         }
-        private void RerenderImage(object source, FileSystemEventArgs e) {
+        private void RerenderPages(object source, FileSystemEventArgs e) {
             imageLoader.ImageConverter.RunWorkerAsync();
         }
 
         private void InitFields() {
             TextBox_FilePath.Text = SettingsManager.FilePath;
             TextBox_NumOfPages.Text = Convert.ToString(SettingsManager.NumOfPages);
+            TextBox_NumOfPagesStart.Text = Convert.ToString(SettingsManager.StartOnPage);
         }
 
         private void SetWatcher() {
@@ -52,7 +53,7 @@ namespace PDFPreview {
                 watcher.Filter = System.IO.Path.GetFileName(SettingsManager.FilePath);
                 watcher.EnableRaisingEvents = true;
                 watcher.NotifyFilter = NotifyFilters.LastAccess | NotifyFilters.LastWrite;
-                watcher.Changed += new FileSystemEventHandler(RerenderImage);
+                watcher.Changed += new FileSystemEventHandler(RerenderPages);
             } catch (Exception ex) when (ex is FormatException || ex is ArgumentException) {
                 TextBox_FilePath.Text = ErrorManager.InvalidFile();
             }
@@ -62,11 +63,14 @@ namespace PDFPreview {
             string text = TextBox_NumOfPages.Text;
             if (!text.Equals("")) {
                 TextBox_NumOfPages.Text = Regex.Replace(text, "[^0-9]", "");
-                SettingsManager.NumOfPages = Convert.ToInt32(TextBox_NumOfPages.Text);
+                if (!TextBox_NumOfPages.Text.Equals("")) {
+                    SettingsManager.NumOfPages = Convert.ToInt32(TextBox_NumOfPages.Text);
+                }
                 if (text != TextBox_NumOfPages.Text) {
                     TextBox_NumOfPages.Select(TextBox_NumOfPages.Text.Count(), 0);
                 }
             }
+            TextBox_NumOfPagesStart_TextChanged(sender, e);
         }
 
         private void TextBox_NumOfPages_KeyUp(object sender, System.Windows.Input.KeyEventArgs e) {
@@ -112,7 +116,9 @@ namespace PDFPreview {
             string text = TextBox_PageWidth.Text;
             if (!text.Equals("")) {
                 TextBox_PageWidth.Text = Regex.Replace(text, "[^0-9]", "");
-                SettingsManager.PageWidth = Convert.ToInt32(TextBox_PageWidth.Text);
+                if (!TextBox_PageWidth.Text.Equals("")) {
+                    SettingsManager.PageWidth = Convert.ToInt32(TextBox_PageWidth.Text);
+                }
                 if (text != TextBox_PageWidth.Text) {
                     TextBox_PageWidth.Select(TextBox_PageWidth.Text.Count(), 0);
                 }
@@ -121,6 +127,25 @@ namespace PDFPreview {
 
         private void Window_Loaded(object sender, RoutedEventArgs e) {
             System.Windows.Application.Current.MainWindow = this;
+        }
+
+        private void TextBox_NumOfPagesStart_TextChanged(object sender, TextChangedEventArgs e) {
+            string text = TextBox_NumOfPagesStart.Text;
+            if (!text.Equals("")) {
+                TextBox_NumOfPagesStart.Text = Regex.Replace(text, "[^0-9]", "");
+                if (!TextBox_NumOfPagesStart.Text.Equals("")) {
+                    if (Convert.ToInt32(TextBox_NumOfPagesStart.Text) > SettingsManager.NumOfPages && SettingsManager.NumOfPages != 0) {
+                        TextBox_NumOfPagesStart.Text = Convert.ToString(SettingsManager.NumOfPages);
+                    }
+                    if (Convert.ToInt32(TextBox_NumOfPagesStart.Text).Equals(0)) {
+                        TextBox_NumOfPagesStart.Text = "1";
+                    }
+                    SettingsManager.StartOnPage = Convert.ToInt32(TextBox_NumOfPagesStart.Text);
+                }
+                if (text != TextBox_NumOfPagesStart.Text) {
+                    TextBox_NumOfPagesStart.Select(TextBox_NumOfPagesStart.Text.Count(), 0);
+                }
+            }
         }
     }
 }

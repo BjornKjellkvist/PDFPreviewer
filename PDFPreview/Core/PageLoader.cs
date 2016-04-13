@@ -35,30 +35,9 @@ namespace PDFPreview.Core {
                         w.Close();
                 }
 
-                System.Drawing.Image[] pages = PDFToIamges(SettingsManager.NumOfPages);
-                for (int i = 0; i < pages.Count(); i++) {
-                    System.Drawing.Image page = pages[i];
-                    Window win = new Window();
-                    win.Icon = BitmapFrame.Create(new Uri("pack://application:,,,/PDFPreview;component/Gfx/PDF.ico"));
-                    win.Title = $"Page {i + 1} | PDFViewer";
-                    win.Background = new SolidColorBrush(System.Windows.Media.Color.FromRgb(204, 204, 204));
-                    StackPanel can = new StackPanel();
-                    can.VerticalAlignment = VerticalAlignment.Top;
-                    win.Content = can;
-                    win.Owner = main;
-                    RenderWindow(win, i);
-                    win.KeyUp += new System.Windows.Input.KeyEventHandler(_Navigator.MoveToPage);
-                    using (var stream = new MemoryStream(ImageToByteArray(page))) {
-                        BitmapImage imageIn = new BitmapImage();
-                        imageIn.BeginInit();
-                        imageIn.StreamSource = stream;
-                        imageIn.CacheOption = BitmapCacheOption.OnLoad;
-                        imageIn.EndInit();
-                        System.Windows.Controls.Image image = new System.Windows.Controls.Image();
-                        image.Source = imageIn;
-                        image.Stretch = Stretch.None;
-                        can.Children.Add(image);
-                    }
+                Page[] Pages = PDFToPages();
+                for (int i = 0; i < Pages.Count(); i++) {
+                    RenderWindow(Pages[i].Window, i);
                 }
             }));
         }
@@ -96,7 +75,7 @@ namespace PDFPreview.Core {
         int desired_x_dpi = 96;
         int desired_y_dpi = 96;
 
-        private System.Drawing.Image[] PDFToIamges(int pagesToRender) {
+        private Page[] PDFToPages() {
             _lastInstalledVersion =
                 GhostscriptVersionInfo.GetLastInstalledVersion(
                         GhostscriptLicense.GPL | GhostscriptLicense.AFPL,
@@ -106,28 +85,72 @@ namespace PDFPreview.Core {
                 _rasterizer.Open(SettingsManager.FilePath, _lastInstalledVersion, false);
             } catch (FileNotFoundException) {
                 ((MainWindow)System.Windows.Application.Current.MainWindow).TextBox_FilePath.Text = ErrorManager.InvalidFile();
-                return new System.Drawing.Image[0];
+                return new Page[0];
             }
 
-
-            if (pagesToRender == 0) {
-                pagesToRender = _rasterizer.PageCount;
+            int PagesToRender = SettingsManager.NumOfPages;
+            if (PagesToRender == 0) {
+                PagesToRender = _rasterizer.PageCount;
             }
-            if (pagesToRender > _rasterizer.PageCount) {
-                pagesToRender = _rasterizer.PageCount;
+            if (PagesToRender > _rasterizer.PageCount) {
+                PagesToRender = _rasterizer.PageCount;
             }
-            System.Drawing.Image[] images = new System.Drawing.Image[pagesToRender];
-            for (int pageNumber = 1; pageNumber <= pagesToRender; pageNumber++) {
+            int Index = SettingsManager.StartOnPage;
+            Page[] Pages = new Page[PagesToRender - Index + 1];
+            int PageIndex = 0;
+            for (; Index <= PagesToRender; Index++) {
                 try {
-                    System.Drawing.Image img = _rasterizer.GetPage(desired_x_dpi, desired_y_dpi, pageNumber);
-                    images[pageNumber - 1] = img;
+                    if (_rasterizer.PageCount >= Index) {
+                        System.Drawing.Image img = _rasterizer.GetPage(desired_x_dpi, desired_y_dpi, Index);
+                        Page Page = new Page(img, Index, main);
+                        Pages[PageIndex] = Page;
+                    }
                 } catch (OutOfMemoryException) {
                     _rasterizer.Close();
-                    return images;
+                    return Pages;
                 }
+                PageIndex++;
             }
             _rasterizer.Close();
-            return images;
+            return Pages;
+        }
+
+        internal class Page {
+            public Page(System.Drawing.Image image, int pageNumber, MainWindow main) {
+                Image = image;
+                PageNumber = pageNumber;
+                Main = main;
+                Window = CreateWindow();
+            }
+
+            protected Window CreateWindow() {
+                Window win = new Window();
+                win.Icon = BitmapFrame.Create(new Uri("pack://application:,,,/PDFPreview;component/Gfx/PDF.ico"));
+                win.Title = $"Page {PageNumber} | PDFViewer";
+                win.Background = new SolidColorBrush(System.Windows.Media.Color.FromRgb(204, 204, 204));
+                StackPanel can = new StackPanel();
+                can.VerticalAlignment = VerticalAlignment.Top;
+                win.Content = can;
+                win.Owner = Main;
+                win.KeyUp += new System.Windows.Input.KeyEventHandler(_Navigator.MoveToPage);
+                using (var stream = new MemoryStream(ImageToByteArray(Image))) {
+                    BitmapImage imageIn = new BitmapImage();
+                    imageIn.BeginInit();
+                    imageIn.StreamSource = stream;
+                    imageIn.CacheOption = BitmapCacheOption.OnLoad;
+                    imageIn.EndInit();
+                    System.Windows.Controls.Image image = new System.Windows.Controls.Image();
+                    image.Source = imageIn;
+                    image.Stretch = Stretch.None;
+                    can.Children.Add(image);
+                }
+                return win;
+            }
+            public Window Window { get; }
+            public int PageNumber { get; }
+            protected System.Drawing.Image Image;
+            protected MainWindow Main;
+            protected Navigator _Navigator = new Navigator();
         }
     }
 }
