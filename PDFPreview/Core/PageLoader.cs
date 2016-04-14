@@ -36,8 +36,14 @@ namespace PDFPreview.Core {
                 }
 
                 Page[] Pages = PDFToPages();
-                for (int i = 0; i < Pages.Count(); i++) {
-                    RenderWindow(Pages[i].Window, i);
+                if (Screen.AllScreens.Length == 1) {
+                    for (int i = Pages.Length; i-- > 0;) {
+                        RenderWindow(Pages[i].Window, i);
+                    }
+                } else {
+                    for (int i = 0; i < Pages.Count(); i++) {
+                        RenderWindow(Pages[i].Window, i);
+                    }
                 }
             }));
         }
@@ -61,6 +67,12 @@ namespace PDFPreview.Core {
                 win.Height = ScreenArea.Height;
                 win.Show();
             } else {
+                Screen s = Screen.PrimaryScreen;
+                System.Drawing.Rectangle ScreenArea = s.WorkingArea;
+                win.Height = ScreenArea.Height;
+                win.Top = ScreenArea.Top;
+                win.Width = SettingsManager.PageWidth;
+                win.Left = ScreenArea.Right - win.Width;
                 win.Show();
             }
         }
