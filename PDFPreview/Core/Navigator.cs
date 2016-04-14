@@ -18,8 +18,7 @@ namespace PDFPreview.Core {
 
             if (e.Key == Key.Escape && FirstTime) {
                 WinIndex.str.Close();
-                FirstTime = false;
-                return;
+                //FirstTime = false;
             }
             if (e.Key == Key.Left && WinIndex.index < System.Windows.Application.Current.Windows.Count && WinIndex.index > 1) {
                 Window moveTo = System.Windows.Application.Current.Windows.OfType<Window>().ElementAt(WinIndex.index - 1);
@@ -27,17 +26,19 @@ namespace PDFPreview.Core {
                     moveTo.WindowState = WindowState.Normal;
                 }
                 moveTo.Activate();
+                //FirstTime = false;
             }
             if (FirstTime && e.Key == Key.Right && WinIndex.index < System.Windows.Application.Current.Windows.Count - 1) {
                 Window moveTo = System.Windows.Application.Current.Windows.OfType<Window>().ElementAt(WinIndex.index + 1);
                 if (moveTo.WindowState == WindowState.Minimized) {
                     moveTo.WindowState = WindowState.Normal;
                 }
+                //FirstTime = false;
                 moveTo.Activate();
-                FirstTime = false;
-                return;
+
             }
-            FirstTime = true;
+            e.Handled = true;
         }
+
     }
 }

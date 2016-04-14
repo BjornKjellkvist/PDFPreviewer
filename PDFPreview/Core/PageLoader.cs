@@ -147,7 +147,7 @@ namespace PDFPreview.Core {
                 return win;
             }
             public Window Window { get; }
-            public int PageNumber { get; }
+            protected int PageNumber;
             protected System.Drawing.Image Image;
             protected MainWindow Main;
             protected Navigator _Navigator = new Navigator();
