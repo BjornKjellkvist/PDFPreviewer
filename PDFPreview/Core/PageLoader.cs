@@ -1,19 +1,15 @@
 ﻿using Ghostscript.NET;
 using Ghostscript.NET.Rasterizer;
 using System;
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Forms;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using System.Windows.Threading;
 
 namespace PDFPreview.Core {
     class PageLoader {
@@ -34,7 +30,6 @@ namespace PDFPreview.Core {
                     if (w != System.Windows.Application.Current.MainWindow)
                         w.Close();
                 }
-
                 Page[] Pages = PDFToPages();
                 if (Screen.AllScreens.Length == 1) {
                     for (int i = Pages.Length; i-- > 0;) {
@@ -47,9 +42,12 @@ namespace PDFPreview.Core {
                 }
             }));
         }
-
+        /// <summary>
+        /// Renders the window on the secondery screen, from left to right.
+        /// </summary>
+        /// <param name="win"></param>
+        /// <param name="Iteration"></param>
         private void RenderWindow(Window win, int Iteration) {
-            //The main window should be rendered on the main screen always
             Screen s = Screen.AllScreens[1];
             System.Drawing.Rectangle ScreenArea = s.WorkingArea;
             win.Top = ScreenArea.Top;
@@ -57,7 +55,7 @@ namespace PDFPreview.Core {
             if (Iteration < 2) {
                 win.Left = ScreenArea.Left + (win.Width * Iteration);
             } else {
-                //Trying to prevent the windows from going of screen
+                //Prevent the windows from going of screen
                 win.Left = (ScreenArea.Left + win.Width) + 50 * Iteration;
                 if (!ScreenArea.Contains(new System.Drawing.Point((int)win.Left + (int)win.Width, (int)win.Top))) {
                     win.Left = ScreenArea.Right - win.Width;
@@ -66,7 +64,10 @@ namespace PDFPreview.Core {
             win.Height = ScreenArea.Height;
             win.Show();
         }
-
+        /// <summary>
+        /// Renders the window on the main screen.
+        /// </summary>
+        /// <param name="win"></param>
         private void RenderWindow(Window win) {
             Screen s = Screen.PrimaryScreen;
             System.Drawing.Rectangle ScreenArea = s.WorkingArea;
@@ -76,6 +77,7 @@ namespace PDFPreview.Core {
             win.Left = ScreenArea.Right - win.Width;
             win.Show();
         }
+
         public static byte[] ImageToByteArray(System.Drawing.Image x) {
             ImageConverter _imageConverter = new ImageConverter();
             byte[] xByte = (byte[])_imageConverter.ConvertTo(x, typeof(byte[]));

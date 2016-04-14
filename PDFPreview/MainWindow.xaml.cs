@@ -1,25 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using PDFPreview.Core;
+using System;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
-using System.Drawing;
-using Ghostscript.NET.Rasterizer;
-using Ghostscript.NET;
 using System.Windows.Forms;
-using System.Text.RegularExpressions;
-using System.Diagnostics;
-using PDFPreview.Core;
+using System.Windows.Input;
 
 namespace PDFPreview {
     /// <summary>
@@ -36,6 +23,7 @@ namespace PDFPreview {
             imageLoader = new PageLoader(this);
             imageLoader.ImageConverter.RunWorkerAsync();
         }
+
         private void RerenderPages(object source, FileSystemEventArgs e) {
             imageLoader.ImageConverter.RunWorkerAsync();
         }
