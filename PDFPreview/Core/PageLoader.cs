@@ -38,7 +38,7 @@ namespace PDFPreview.Core {
                 Page[] Pages = PDFToPages();
                 if (Screen.AllScreens.Length == 1) {
                     for (int i = Pages.Length; i-- > 0;) {
-                        RenderWindow(Pages[i].Window, i);
+                        RenderWindow(Pages[i].Window);
                     }
                 } else {
                     for (int i = 0; i < Pages.Count(); i++) {
@@ -50,31 +50,31 @@ namespace PDFPreview.Core {
 
         private void RenderWindow(Window win, int Iteration) {
             //The main window should be rendered on the main screen always
-            if (Screen.AllScreens.Length > 1) {
-                Screen s = Screen.AllScreens[1];
-                System.Drawing.Rectangle ScreenArea = s.WorkingArea;
-                win.Top = ScreenArea.Top;
-                win.Width = SettingsManager.PageWidth;
-                if (Iteration < 2) {
-                    win.Left = ScreenArea.Left + (win.Width * Iteration);
-                } else {
-                    //Trying to prevent the windows from going of screen
-                    win.Left = (ScreenArea.Left + win.Width) + 50 * Iteration;
-                    if (!ScreenArea.Contains(new System.Drawing.Point((int)win.Left + 50, (int)win.Top))) {
-                        win.Left = ScreenArea.Right - win.Width;
-                    }
-                }
-                win.Height = ScreenArea.Height;
-                win.Show();
+            Screen s = Screen.AllScreens[1];
+            System.Drawing.Rectangle ScreenArea = s.WorkingArea;
+            win.Top = ScreenArea.Top;
+            win.Width = SettingsManager.PageWidth;
+            if (Iteration < 2) {
+                win.Left = ScreenArea.Left + (win.Width * Iteration);
             } else {
-                Screen s = Screen.PrimaryScreen;
-                System.Drawing.Rectangle ScreenArea = s.WorkingArea;
-                win.Height = ScreenArea.Height;
-                win.Top = ScreenArea.Top;
-                win.Width = SettingsManager.PageWidth;
-                win.Left = ScreenArea.Right - win.Width;
-                win.Show();
+                //Trying to prevent the windows from going of screen
+                win.Left = (ScreenArea.Left + win.Width) + 50 * Iteration;
+                if (!ScreenArea.Contains(new System.Drawing.Point((int)win.Left + (int)win.Width, (int)win.Top))) {
+                    win.Left = ScreenArea.Right - win.Width;
+                }
             }
+            win.Height = ScreenArea.Height;
+            win.Show();
+        }
+
+        private void RenderWindow(Window win) {
+            Screen s = Screen.PrimaryScreen;
+            System.Drawing.Rectangle ScreenArea = s.WorkingArea;
+            win.Height = ScreenArea.Height;
+            win.Top = ScreenArea.Top;
+            win.Width = SettingsManager.PageWidth;
+            win.Left = ScreenArea.Right - win.Width;
+            win.Show();
         }
         public static byte[] ImageToByteArray(System.Drawing.Image x) {
             ImageConverter _imageConverter = new ImageConverter();
