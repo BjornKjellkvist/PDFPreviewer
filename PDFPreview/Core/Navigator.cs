@@ -8,32 +8,31 @@ using System.Windows.Input;
 
 namespace PDFPreview.Core {
     class Navigator {
-        bool FirstTime = true;
         public void MoveToPage(object sender, System.Windows.Input.KeyEventArgs e) {
-            //FIRSTTIME FIXES RECURSION, DONT ASK ME WHY...
-            var WinIndex = System.Windows.Application.Current.Windows.OfType<Window>()
+            var Window = System.Windows.Application.Current.Windows.OfType<Window>()
                 .Select((str, index) => new { str, index })
                 .Where(x => x.str.Equals(sender))
                 .FirstOrDefault();
 
-            if (e.Key == Key.Escape && FirstTime) {
-                WinIndex.str.Close();
-                //FirstTime = false;
+            if (e.Key == Key.Escape) {
+                Window.str.Close();
+                if (Application.Current.Windows.Count < 2) {
+                    ((MainWindow)System.Windows.Application.Current.MainWindow).WindowState = WindowState.Normal;
+                    ((MainWindow)System.Windows.Application.Current.MainWindow).Activate();
+                }
             }
-            if (e.Key == Key.Left && WinIndex.index < System.Windows.Application.Current.Windows.Count && WinIndex.index > 1) {
-                Window moveTo = System.Windows.Application.Current.Windows.OfType<Window>().ElementAt(WinIndex.index - 1);
+            if (e.Key == Key.Left && Window.index < System.Windows.Application.Current.Windows.Count && Window.index > 1) {
+                Window moveTo = System.Windows.Application.Current.Windows.OfType<Window>().ElementAt(Window.index - 1);
                 if (moveTo.WindowState == WindowState.Minimized) {
                     moveTo.WindowState = WindowState.Normal;
                 }
                 moveTo.Activate();
-                //FirstTime = false;
             }
-            if (FirstTime && e.Key == Key.Right && WinIndex.index < System.Windows.Application.Current.Windows.Count - 1) {
-                Window moveTo = System.Windows.Application.Current.Windows.OfType<Window>().ElementAt(WinIndex.index + 1);
+            if (e.Key == Key.Right && Window.index < System.Windows.Application.Current.Windows.Count - 1) {
+                Window moveTo = System.Windows.Application.Current.Windows.OfType<Window>().ElementAt(Window.index + 1);
                 if (moveTo.WindowState == WindowState.Minimized) {
                     moveTo.WindowState = WindowState.Normal;
                 }
-                //FirstTime = false;
                 moveTo.Activate();
 
             }
