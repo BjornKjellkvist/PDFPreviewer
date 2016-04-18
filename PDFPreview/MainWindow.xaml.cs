@@ -25,7 +25,9 @@ namespace PDFPreview {
         }
 
         private void RerenderPages(object source, FileSystemEventArgs e) {
-            imageLoader.ImageConverter.RunWorkerAsync();
+            if (!imageLoader.ImageConverter.IsBusy) {
+                imageLoader.ImageConverter.RunWorkerAsync();
+            }
         }
 
         private void InitFields() {

@@ -19,12 +19,12 @@ namespace PDFPreview.Core {
         public PageLoader(MainWindow main) {
             ImageConverter.WorkerReportsProgress = false;
             ImageConverter.WorkerSupportsCancellation = true;
-            ImageConverter.DoWork += (obj, e) => RenderPages();
+            ImageConverter.DoWork += RenderPages;
             this.main = main;
             _Navigator = new Navigator();
         }
 
-        private void RenderPages() {
+        private void RenderPages(object sender, DoWorkEventArgs e) {
             main.Dispatcher.InvokeAsync((Action)(() => {
                 foreach (Window w in System.Windows.Application.Current.Windows) {
                     if (w != System.Windows.Application.Current.MainWindow)
